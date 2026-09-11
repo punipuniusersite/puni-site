@@ -126,6 +126,58 @@
             border: 1px solid #ffb6c1;
         }
 
+        /* おすすめ動画セクション */
+        .featured-video-area {
+            margin-bottom: 14px;
+            background: #fff9e6;
+            border: 2px solid #ffcc00;
+            border-radius: 16px;
+            padding: 10px 12px;
+        }
+        .featured-label {
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #cc6600;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .video-thumb-link {
+            display: block;
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        .video-thumb-link:active {
+            transform: scale(0.98);
+        }
+        .video-thumb-img {
+            width: 100%;
+            height: auto;
+            display: block;
+            aspect-ratio: 16 / 9;
+            object-fit: cover;
+        }
+        .play-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255, 0, 0, 0.85);
+            color: #ffffff;
+            font-size: 1.5rem;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+        }
+
         /* タグ */
         .tags {
             display: flex;
@@ -209,11 +261,15 @@
         {
             channelId: 'UCXD1zQj2MRinYK982k7z2eg', // 1人目：あれねこ☯さん
             discordUrl: 'https://discord.gg/BBYWHnAZ9m',
+            featuredVideoUrl: 'https://youtu.be/0CnSA-YwE8I?si=CBk2HyjNsCygtCXT',
+            featuredVideoId: '0CnSA-YwE8I',
             tags: ['#ディスコ開設', '#無課金攻略', '#スコアタ', '#お助け']
         },
         {
             channelId: 'UCgQpjqNazW0WoiogVhfzRbg', // 2人目：がめごすさん
             discordUrl: 'https://discord.gg/kQGDR7DE4J',
+            featuredVideoUrl: 'https://youtu.be/R_O7yjwQTjQ?si=bA3t-GEMVxCIOz1G',
+            featuredVideoId: 'R_O7yjwQTjQ',
             tags: ['#がめごす', '#最強']
         }
     ];
@@ -226,6 +282,9 @@
             const card = document.createElement('div');
             card.className = 'card';
             
+            // サムネイル画像URLの生成 (YouTube標準高画質サムネイル)
+            const thumbnailUrl = `https://img.youtube.com/vi/${streamer.featuredVideoId}/hqdefault.jpg`;
+
             card.innerHTML = `
                 <div class="card-header">
                     <div class="icon-area">
@@ -240,6 +299,15 @@
                         <h2 class="streamer-name">読み込み中...</h2>
                         <div class="subscribers">▶ 登録者数：--人</div>
                     </div>
+                </div>
+
+                <!-- おすすめ動画サムネイル枠 -->
+                <div class="featured-video-area">
+                    <div class="featured-label">🎬 おすすめ動画（タップで再生）</div>
+                    <a href="${streamer.featuredVideoUrl}" target="_blank" class="video-thumb-link">
+                        <img src="${thumbnailUrl}" alt="おすすめ動画サムネイル" class="video-thumb-img">
+                        <div class="play-overlay">▶</div>
+                    </a>
                 </div>
 
                 <div style="font-size: 0.85rem; font-weight: bold; color: #0077cc; margin-bottom: 6px;">チャンネル内容</div>
