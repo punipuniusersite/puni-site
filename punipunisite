@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ぷにぷに実況者 Discordサーバー一覧</title>
+    <style>
+        /* 全体背景（ぷにぷに風ポップグラデーション） */
+        body {
+            font-family: 'Hiragino Maru Gothic ProN', 'メイリオ', sans-serif;
+            background: linear-gradient(135deg, #70e1ff 0%, #38b6ff 50%, #1e88e5 100%);
+            background-attachment: fixed;
+            margin: 0;
+            padding: 20px 12px;
+            color: #333;
+        }
+
+        /* 横幅調整 */
+        .container {
+            max-width: 768px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* サイトタイトル */
+        .site-header {
+            text-align: center;
+            background: #ffffff;
+            border: 4px solid #ffcc00;
+            border-radius: 20px;
+            padding: 12px;
+            box-shadow: 0 6px 0 #e6b800;
+            margin-bottom: 10px;
+        }
+        .site-title {
+            margin: 0;
+            font-size: 1.4rem;
+            color: #ff3366;
+            text-shadow: 1px 1px 0 #fff;
+        }
+
+        /* 実況者カード */
+        .card {
+            background-color: #ffffff;
+            border-radius: 24px;
+            padding: 20px;
+            border: 4px solid #ffcc00;
+            box-shadow: 0 8px 0 rgba(0, 0, 0, 0.15), inset 0 2px 0 #ffffff;
+        }
+
+        /* ヘッダーエリア */
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 14px;
+        }
+
+        /* アイコン＋案内テキストのエリア */
+        .icon-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+
+        /* YouTubeアイコン */
+        .yt-link {
+            position: relative;
+            display: inline-block;
+            text-decoration: none;
+        }
+        .streamer-icon {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #ff3366;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            display: block;
+            background-color: #eee;
+        }
+        .yt-badge {
+            position: absolute;
+            bottom: -2px;
+            right: -2px;
+            background-color: #ff0000;
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: bold;
+            padding: 3px 6px;
+            border-radius: 10px;
+            border: 2px solid #fff;
+        }
+
+        /* アイコン下の案内テキスト */
+        .icon-hint {
+            font-size: 0.68rem;
+            color: #ff3366;
+            font-weight: bold;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        /* プロフィール情報 */
+        .profile-info {
+            flex-grow: 1;
+        }
+        .streamer-name {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin: 0 0 6px 0;
+            color: #1a1a1a;
+        }
+        .subscribers {
+            font-size: 0.9rem;
+            color: #ff3366;
+            font-weight: bold;
+            background-color: #fff0f5;
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            border: 1px solid #ffb6c1;
+        }
+
+        /* おすすめ動画セクション */
+        .featured-video-area {
+            margin-bottom: 14px;
+            background: #fff9e6;
+            border: 2px solid #ffcc00;
+            border-radius: 16px;
+            padding: 10px 12px;
+        }
+        .featured-label {
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #cc6600;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .video-thumb-link {
+            display: block;
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        .video-thumb-link:active {
+            transform: scale(0.98);
+        }
+        .video-thumb-img {
+            width: 100%;
+            height: auto;
+            display: block;
+            aspect-ratio: 16 / 9;
+            object-fit: cover;
+        }
+        .play-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255, 0, 0, 0.85);
+            color: #ffffff;
+            font-size: 1.5rem;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+        }
+
+        /* タグ */
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+        .tag {
+            background-color: #ffcc00;
+            color: #664400;
+            font-size: 0.8rem;
+            font-weight: bold;
+            padding: 5px 12px;
+            border-radius: 20px;
+            box-shadow: 0 2px 0 #e6b800;
+        }
+
+        /* チャンネル概要欄エリア */
+        .channel-about {
+            background-color: #f0f8ff;
+            border: 2px dashed #38b6ff;
+            border-radius: 16px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+        }
+        .about-title {
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: #0077cc;
+            margin-bottom: 6px;
+        }
+        .about-text {
+            font-size: 0.88rem;
+            line-height: 1.6;
+            color: #333333;
+            margin: 0;
+            white-space: pre-wrap;
+        }
+
+        /* Discord参加ボタン */
+        .btn-join {
+            display: block;
+            width: 100%;
+            background: linear-gradient(180deg, #7289da 0%, #5865f2 100%);
+            color: #ffffff;
+            text-align: center;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            padding: 14px 0;
+            border-radius: 16px;
+            box-shadow: 0 6px 0 #3b429f;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            box-sizing: border-box;
+            transition: transform 0.1s;
+        }
+        .btn-join:active {
+            transform: translateY(3px);
+            box-shadow: 0 3px 0 #3b429f;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="site-header">
+        <h1 class="site-title">ぷにぷに実況者 Discordサーバーまとめ</h1>
+    </div>
+
+    <!-- 実況者カードがここに自動生成されます -->
+    <div id="streamers-list" style="display: flex; flex-direction: column; gap: 20px;"></div>
+
+</div>
+
+<script>
+    const API_KEY = 'AIzaSyCcQFKlZcjUgKp0Erfn69_lmB6HacmhpMY';
+
+    // 実況者データ一覧
+    const streamers = [
+        {
+            channelId: 'UCXD1zQj2MRinYK982k7z2eg', // 1人目：あれねこ☯さん
+            discordUrl: 'https://discord.gg/BBYWHnAZ9m',
+            featuredVideoUrl: 'https://youtu.be/0CnSA-YwE8I?si=CBk2HyjNsCygtCXT',
+            featuredVideoId: '0CnSA-YwE8I',
+            tags: ['#ディスコ開設', '#無課金攻略', '#スコアタ', '#お助け']
+        },
+        {
+            channelId: 'UCgQpjqNazW0WoiogVhfzRbg', // 2人目：がめごすさん
+            discordUrl: 'https://discord.gg/kQGDR7DE4J',
+            featuredVideoUrl: 'https://youtu.be/R_O7yjwQTjQ?si=bA3t-GEMVxCIOz1G',
+            featuredVideoId: 'R_O7yjwQTjQ',
+            tags: ['#がめごす', '#最強']
+        }
+    ];
+
+    async function fetchAllStreamers() {
+        const container = document.getElementById('streamers-list');
+        container.innerHTML = '';
+
+        for (const streamer of streamers) {
+            const card = document.createElement('div');
+            card.className = 'card';
+            
+            // サムネイル画像URLの生成 (YouTube標準高画質サムネイル)
+            const thumbnailUrl = `https://img.youtube.com/vi/${streamer.featuredVideoId}/hqdefault.jpg`;
+
+            card.innerHTML = `
+                <div class="card-header">
+                    <div class="icon-area">
+                        <a href="https://www.youtube.com/channel/${streamer.channelId}" target="_blank" class="yt-link" title="YouTubeチャンネルへ">
+                            <img src="" alt="アイコン" class="streamer-icon">
+                            <span class="yt-badge">▶</span>
+                        </a>
+                        <span class="icon-hint">👆 タップでチャンネルへ</span>
+                    </div>
+
+                    <div class="profile-info">
+                        <h2 class="streamer-name">読み込み中...</h2>
+                        <div class="subscribers">▶ 登録者数：--人</div>
+                    </div>
+                </div>
+
+                <!-- おすすめ動画サムネイル枠 -->
+                <div class="featured-video-area">
+                    <div class="featured-label">🎬 おすすめ動画（タップで再生）</div>
+                    <a href="${streamer.featuredVideoUrl}" target="_blank" class="video-thumb-link">
+                        <img src="${thumbnailUrl}" alt="おすすめ動画サムネイル" class="video-thumb-img">
+                        <div class="play-overlay">▶</div>
+                    </a>
+                </div>
+
+                <div style="font-size: 0.85rem; font-weight: bold; color: #0077cc; margin-bottom: 6px;">チャンネル内容</div>
+                <div class="tags">
+                    ${streamer.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                </div>
+
+                <div class="channel-about">
+                    <div class="about-title">【YouTube チャンネル概要】</div>
+                    <p class="about-text">YouTubeから概要欄を取得中...</p>
+                </div>
+
+                <a href="${streamer.discordUrl}" target="_blank" class="btn-join">🎮 Discordサーバーに参加する</a>
+            `;
+
+            container.appendChild(card);
+
+            try {
+                const url = `https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&id=${streamer.channelId}&key=${API_KEY}`;
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data.items && data.items.length > 0) {
+                    const snippet = data.items[0].snippet;
+                    const stats = data.items[0].statistics;
+
+                    card.querySelector('.streamer-name').textContent = snippet.title;
+                    card.querySelector('.streamer-icon').src = snippet.thumbnails.medium.url;
+                    card.querySelector('.about-text').textContent = snippet.description || '概要欄の記載はありません。';
+
+                    const count = parseInt(stats.subscriberCount);
+                    let countText = count >= 10000 
+                        ? (count / 10000).toFixed(1) + '万人' 
+                        : count.toLocaleString() + '人';
+                    card.querySelector('.subscribers').textContent = `▶ 登録者数：${countText}`;
+                }
+            } catch (error) {
+                console.error('取得エラー:', error);
+                card.querySelector('.about-text').textContent = 'データの取得に失敗しました。';
+            }
+        }
+    }
+
+    fetchAllStreamers();
+</script>
+
+</body>
+</html>
